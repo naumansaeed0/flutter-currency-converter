@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_currency_converter/core/utils/constants.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -9,6 +10,7 @@ abstract class RegisterModule {
   Dio get dio {
     final dio = Dio();
 
+    dio.options.baseUrl = AppConstants.baseUrl;
     dio.options.headers = {
       'Content-Type': 'application/json',
     };
