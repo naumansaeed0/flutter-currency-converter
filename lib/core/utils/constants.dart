@@ -3,4 +3,7 @@ class AppConstants {
 
   static const String currenciesEndpoint = '/currencies';
   static const String convertEndpoint = '/convert';
+
+  static const String lockedCurrencySource = 'USD';
+  static const String lockedCurrencyTarget = 'EUR';
 }

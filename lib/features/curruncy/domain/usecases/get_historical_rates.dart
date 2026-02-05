@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_currency_converter/core/error/failures.dart';
 import 'package:flutter_currency_converter/core/usecases/usecase.dart';
 import 'package:flutter_currency_converter/features/currency/domain/repositories/currency_repository.dart';
@@ -13,11 +14,19 @@ class GetHistoricalRates implements UseCase<Map<String, double>, GetHistoryParam
 
   @override
   Future<Either<Failure, Map<String, double>>> call(GetHistoryParams params) async {
+    final now = DateTime.now();
+
+    final sevenDaysAgo = now.subtract(const Duration(days: 6));
+
+    final dateFormat = DateFormat('yyyy-MM-dd');
+    final startDateString = dateFormat.format(sevenDaysAgo);
+    final endDateString = dateFormat.format(now);
+
     return await repository.getHistoricalRates(
       from: params.from,
       to: params.to,
-      startDate: params.startDate,
-      endDate: params.endDate,
+      startDate: startDateString,
+      endDate: endDateString,
     );
   }
 }
@@ -25,16 +34,12 @@ class GetHistoricalRates implements UseCase<Map<String, double>, GetHistoryParam
 class GetHistoryParams extends Equatable {
   final String from;
   final String to;
-  final String startDate;
-  final String endDate;
 
   const GetHistoryParams({
     required this.from,
     required this.to,
-    required this.startDate,
-    required this.endDate,
   });
 
   @override
-  List<Object> get props => [from, to, startDate, endDate];
+  List<Object> get props => [from, to];
 }

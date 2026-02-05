@@ -14,6 +14,12 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     as _i973;
 
+import '../../features/curruncy/data/datasources/currency_local_data_source.dart'
+    as _i994;
+import '../../features/curruncy/data/datasources/currency_remote_data_source.dart'
+    as _i936;
+import '../../features/curruncy/data/repositories/currency_repository_impl.dart'
+    as _i864;
 import '../../features/curruncy/domain/usecases/convert_currency.dart' as _i676;
 import '../../features/curruncy/domain/usecases/get_currencies.dart' as _i83;
 import '../../features/curruncy/domain/usecases/get_historical_rates.dart'
@@ -43,8 +49,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i83.GetCurrencies(gh<InvalidType>()));
     gh.lazySingleton<_i452.GetHistoricalRates>(
         () => _i452.GetHistoricalRates(gh<InvalidType>()));
+    gh.lazySingleton<_i936.CurrencyRemoteDataSource>(
+        () => _i936.CurrencyRemoteDataSourceImpl(gh<_i361.Dio>()));
+    gh.lazySingleton<_i994.CurrencyLocalDataSource>(
+        () => _i994.CurrencyLocalDataSourceImpl());
     gh.lazySingleton<_i932.NetworkInfo>(
         () => _i865.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()));
+    gh.lazySingleton<_i864.CurrencyRepositoryImpl>(
+        () => _i864.CurrencyRepositoryImpl(
+              remoteDataSource: gh<InvalidType>(),
+              localDataSource: gh<InvalidType>(),
+              networkInfo: gh<_i932.NetworkInfo>(),
+            ));
     return this;
   }
 }
