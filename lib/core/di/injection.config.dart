@@ -24,6 +24,7 @@ import '../../features/curruncy/domain/usecases/convert_currency.dart' as _i676;
 import '../../features/curruncy/domain/usecases/get_currencies.dart' as _i83;
 import '../../features/curruncy/domain/usecases/get_historical_rates.dart'
     as _i452;
+import '../../features/curruncy/presentation/bloc/currency_bloc.dart' as _i234;
 import '../network/network_info.dart' as _i932;
 import '../network/network_info_impl.dart' as _i865;
 import 'register_module.dart' as _i291;
@@ -53,6 +54,11 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i936.CurrencyRemoteDataSourceImpl(gh<_i361.Dio>()));
     gh.lazySingleton<_i994.CurrencyLocalDataSource>(
         () => _i994.CurrencyLocalDataSourceImpl());
+    gh.factory<_i234.CurrencyBloc>(() => _i234.CurrencyBloc(
+          gh<InvalidType>(),
+          gh<InvalidType>(),
+          gh<InvalidType>(),
+        ));
     gh.lazySingleton<_i932.NetworkInfo>(
         () => _i865.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()));
     gh.lazySingleton<_i864.CurrencyRepositoryImpl>(
