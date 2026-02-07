@@ -20,7 +20,10 @@ class CurrencyState extends Equatable {
     this.currenciesStatus = CurrencyStatus.initial,
     this.historyStatus = CurrencyStatus.initial,
     this.conversionStatus = CurrencyStatus.initial,
-    this.currencies = const [],
+    this.currencies = const [
+      CurrencyEntity(code: 'USD', name: 'US Dollar', countryCode: 'US'),
+      CurrencyEntity(code: 'EUR', name: 'Euro', countryCode: 'EU'),
+    ],
     this.history = const [],
     this.conversionResult,
     this.fromCurrency = 'USD',

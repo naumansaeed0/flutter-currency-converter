@@ -48,7 +48,7 @@ class _HistoryViewState extends State<HistoryView> {
                   const Text(
                     '7 Day Trend',
                     style: TextStyle(
-                      fontSize: AppDimens.textTitle,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryBlue,
                     ),

@@ -49,7 +49,7 @@ class CurrencyTable extends StatelessWidget {
               DateFormat('dd\nMMM').format(date),
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  fontSize: AppDimens.textSmall,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.primaryBlue
               ),

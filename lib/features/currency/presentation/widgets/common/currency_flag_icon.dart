@@ -9,18 +9,17 @@ class CurrencyFlagIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lowerCaseCode = countryCode.toLowerCase();
-    final flagUrl = "https://flagcdn.com/w40/$lowerCaseCode.png";
+    final flagUrl = "https://flagcdn.com/w20/$lowerCaseCode.png";
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(4.0),
       child: CachedNetworkImage(
         imageUrl: flagUrl,
-        width: 40.0,
-        height: 30.0,
+        width: 32.0,
+        height: 24.0,
         fit: BoxFit.cover,
         errorWidget: (context, url, error) => const Icon(
           Icons.flag,
-          size: 16.0,
+          size: 14.0,
         ),
       ),
     );

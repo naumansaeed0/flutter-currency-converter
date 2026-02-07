@@ -25,14 +25,12 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
       this.getHistoricalRates,
       ) : super(const CurrencyState()) {
 
-    // App Start
     on<GetInitialDataEvent>((event, emit) async {
       emit(state.copyWith(
         currenciesStatus: CurrencyStatus.loading,
         historyStatus: CurrencyStatus.loading,
       ));
 
-      // Fetch Currencies
       final currenciesResult = await getCurrencies(NoParams());
 
       await currenciesResult.fold(
@@ -46,7 +44,6 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
             currencies: currenciesList,
           ));
 
-          // Fetch History
           final now = DateTime.now();
           final sevenDaysAgo = now.subtract(const Duration(days: 7));
 
@@ -73,7 +70,6 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
       );
     });
 
-    // Selection Logic
     on<SourceCurrencyChanged>((event, emit) {
       emit(state.copyWith(fromCurrency: event.currencyCode));
     });
@@ -87,11 +83,9 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
         fromCurrency: state.toCurrency,
         toCurrency: state.fromCurrency,
       ));
-      // trigger conversion immediately
       add(ConvertCurrencyEvent(amount: state.inputAmount));
     });
 
-    //  Conversion Logic
     on<ConvertCurrencyEvent>((event, emit) async {
       emit(state.copyWith(
         conversionStatus: CurrencyStatus.loading,

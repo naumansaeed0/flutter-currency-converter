@@ -23,6 +23,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: const DashboardAppBar(),
       body: IndexedStack(
         index: _currentIndex,
