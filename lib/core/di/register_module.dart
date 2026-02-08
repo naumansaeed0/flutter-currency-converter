@@ -20,7 +20,31 @@ abstract class RegisterModule {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
         options.queryParameters.addAll({
-          'apiKey': dotenv.env['CURRENCY_API_KEY']
+          'api_key': dotenv.env['CURRENCY_API_KEY']
+        });
+        return handler.next(options);
+      },
+    ));
+
+    return dio;
+  }
+
+  @Named('historicalDio')
+  @lazySingleton
+  Dio get historicalDio {
+    final dio = Dio();
+
+    dio.options.baseUrl = AppConstants.historicalBaseUrl;
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    dio.options.connectTimeout = const Duration(seconds: 10);
+    dio.options.receiveTimeout = const Duration(seconds: 10);
+
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        options.queryParameters.addAll({
+          'access_key': dotenv.env['EXCHANGERATE_HOST_API_KEY']
         });
         return handler.next(options);
       },

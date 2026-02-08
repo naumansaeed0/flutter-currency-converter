@@ -45,7 +45,7 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
           ));
 
           final now = DateTime.now();
-          final sevenDaysAgo = now.subtract(const Duration(days: 7));
+          final sevenDaysAgo = now.subtract(const Duration(days: 6));
 
           final historyResult = await getHistoricalRates(GetHistoryParams(
             from: AppConstants.lockedCurrencySource,
@@ -71,11 +71,19 @@ class CurrencyBloc extends Bloc<CurrencyEvent, CurrencyState> {
     });
 
     on<SourceCurrencyChanged>((event, emit) {
-      emit(state.copyWith(fromCurrency: event.currencyCode));
+      emit(state.copyWith(
+        fromCurrency: event.currencyCode,
+        conversionStatus: CurrencyStatus.loading,
+      ));
+      add(ConvertCurrencyEvent(amount: state.inputAmount));
     });
 
     on<TargetCurrencyChanged>((event, emit) {
-      emit(state.copyWith(toCurrency: event.currencyCode));
+      emit(state.copyWith(
+        toCurrency: event.currencyCode,
+        conversionStatus: CurrencyStatus.loading,
+      ));
+      add(ConvertCurrencyEvent(amount: state.inputAmount));
     });
 
     on<SwapCurrenciesEvent>((event, emit) {

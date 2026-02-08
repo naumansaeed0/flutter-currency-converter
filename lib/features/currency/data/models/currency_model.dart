@@ -37,6 +37,14 @@ class CurrencyModel extends CurrencyEntity {
     );
   }
 
+  factory CurrencyModel.fromCodeAndName(String code, String name) {
+    return CurrencyModel(
+      code: code,
+      name: name,
+      countryCode: _mapCurrencyToCountry(code),
+    );
+  }
+
   static String _mapCurrencyToCountry(String currencyCode) {
     if (_currencyToCountryMap.containsKey(currencyCode)) {
       return _currencyToCountryMap[currencyCode]!;

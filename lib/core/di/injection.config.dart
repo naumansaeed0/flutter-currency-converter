@@ -49,10 +49,17 @@ extension GetItInjectableX on _i174.GetIt {
         () => registerModule.internetConnectionChecker);
     gh.lazySingleton<_i443.CurrencyLocalDataSource>(
         () => _i443.CurrencyLocalDataSourceImpl());
+    gh.lazySingleton<_i361.Dio>(
+      () => registerModule.historicalDio,
+      instanceName: 'historicalDio',
+    );
     gh.lazySingleton<_i932.NetworkInfo>(
         () => _i865.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()));
     gh.lazySingleton<_i907.CurrencyRemoteDataSource>(
-        () => _i907.CurrencyRemoteDataSourceImpl(dio: gh<_i361.Dio>()));
+        () => _i907.CurrencyRemoteDataSourceImpl(
+              dio: gh<_i361.Dio>(),
+              historicalDio: gh<_i361.Dio>(instanceName: 'historicalDio'),
+            ));
     gh.lazySingleton<_i87.CurrencyRepository>(
         () => _i751.CurrencyRepositoryImpl(
               remoteDataSource: gh<_i907.CurrencyRemoteDataSource>(),

@@ -15,9 +15,12 @@ abstract class CurrencyRemoteDataSource {
 @LazySingleton(as: CurrencyRemoteDataSource)
 class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
   final Dio dio;
+  final Dio historicalDio;
 
-  CurrencyRemoteDataSourceImpl({required this.dio});
-
+  CurrencyRemoteDataSourceImpl({
+    required this.dio,
+    @Named('historicalDio') required this.historicalDio,
+  });
 
 
   @override
@@ -28,17 +31,22 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
       final response = await dio.get(url);
 
       if (response.statusCode == 200) {
-        final jsonMap = response.data;
+        final jsonMap = response.data as Map<String, dynamic>;
 
-        if (jsonMap is Map && jsonMap.containsKey('results')) {
-          final results = jsonMap['results'] as Map<String, dynamic>;
-          return results.values
-              .map((e) => CurrencyModel.fromJson(e))
-              .toList()
-            ..sort((a, b) => a.code.compareTo(b.code));
-        } else {
-          throw ServerException();
+        if (jsonMap.containsKey('currencies')) {
+          final currenciesData = jsonMap['currencies'];
+          
+          if (currenciesData is List) {
+            return currenciesData
+                .map((code) {
+                  final currencyCode = code.toString();
+                  return CurrencyModel.fromCodeAndName(currencyCode, currencyCode);
+                })
+                .toList()
+              ..sort((a, b) => a.code.compareTo(b.code));
+          }
         }
+        throw ServerException();
       } else {
         throw ServerException();
       }
@@ -49,21 +57,19 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
 
   @override
   Future<ExchangeRateModel> getExchangeRate(String from, String to) async {
-    final query = '${from}_$to';
-    final url = '${AppConstants.baseUrl}${AppConstants.convertEndpoint}?q=$query&compact=ultra';
+    final url = '${AppConstants.baseUrl}${AppConstants.convertEndpoint}?from=$from&to=$to';
 
     try {
       final response = await dio.get(url);
 
       if (response.statusCode == 200) {
-        final jsonMap = response.data;
+        final jsonMap = response.data as Map<String, dynamic>;
 
-        if (jsonMap is Map && jsonMap.containsKey(query)) {
-          final rate = (jsonMap[query] as num).toDouble();
+        if (jsonMap.containsKey('result')) {
           return ExchangeRateModel(
-            fromCurrency: from,
-            toCurrency: to,
-            rate: rate,
+            fromCurrency: jsonMap['from'] as String,
+            toCurrency: jsonMap['to'] as String,
+            rate: (jsonMap['result'] as num).toDouble(),
           );
         } else {
           throw ServerException();
@@ -78,23 +84,27 @@ class CurrencyRemoteDataSourceImpl implements CurrencyRemoteDataSource {
 
   @override
   Future<Map<String, double>> getHistoricalRates(String from, String to, String startDate, String endDate) async {
-    final query = '${from}_$to';
-    final url = '${AppConstants.baseUrl}${AppConstants.convertEndpoint}?q=$query&compact=ultra&date=$startDate&endDate=$endDate';
-
+    final url = '${AppConstants.historicalTimeseriesPath}?start_date=$startDate&end_date=$endDate&base=$from&symbols=$to';
+    
     try {
-      final response = await dio.get(url);
+      final response = await historicalDio.get(url);
 
       if (response.statusCode == 200) {
-        final jsonMap = response.data;
+        final jsonMap = response.data as Map<String, dynamic>;
 
-        if (jsonMap is Map && jsonMap.containsKey(query)) {
-          final ratesMap = jsonMap[query];
-
-          if (ratesMap is Map) {
-            return Map<String, double>.from(
-                ratesMap.map((key, value) => MapEntry(key, (value as num).toDouble()))
-            );
-          }
+        if (jsonMap.containsKey('quotes')) {
+          final quotesMap = jsonMap['quotes'] as Map<String, dynamic>;
+          
+          final result = <String, double>{};
+          final currencyPairKey = '$from$to';
+          
+          quotesMap.forEach((date, currencies) {
+            if (currencies is Map && currencies.containsKey(currencyPairKey)) {
+              result[date] = (currencies[currencyPairKey] as num).toDouble();
+            }
+          });
+          
+          return result;
         }
         throw ServerException();
       } else {
