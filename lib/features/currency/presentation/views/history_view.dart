@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_currency_converter/core/theme/app_dimens.dart';
 import 'package:flutter_currency_converter/core/theme/app_theme.dart';
 import 'package:flutter_currency_converter/core/utils/constants.dart';
-import 'package:flutter_currency_converter/features/currency/presentation/widgets/common/toggle_button.dart'; // Ensure this import exists
+import 'package:flutter_currency_converter/features/currency/presentation/widgets/common/toggle_button.dart';
+import 'package:flutter_currency_converter/features/currency/presentation/widgets/history/currency_summary.dart';
 import '../bloc/currency_bloc.dart';
 import '../widgets/history/currency_chart.dart';
 import '../widgets/history/currency_table.dart';
@@ -27,10 +28,17 @@ class _HistoryViewState extends State<HistoryView> {
         }
 
         if (state.history.isEmpty) {
-          return const Center(
-            child: Text(
-              "No historical data available",
-              style: TextStyle(color: Colors.grey),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.history_toggle_off, size: 64, color: Colors.grey.shade300),
+                const SizedBox(height: 16),
+                Text(
+                  "No historical data available",
+                  style: TextStyle(color: Colors.grey.shade500),
+                ),
+              ],
             ),
           );
         }
@@ -41,25 +49,40 @@ class _HistoryViewState extends State<HistoryView> {
         return Padding(
           padding: const EdgeInsets.all(AppDimens.base),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    '7 Day Trend',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryBlue,
-                    ),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Market Trend',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryBlue,
+                        ),
+                      ),
+                      Text(
+                        'Last 7 Days',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8.0),
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade200),
                     ),
                     padding: const EdgeInsets.all(4.0),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         ToggleButton(
                           icon: Icons.show_chart,
@@ -67,7 +90,7 @@ class _HistoryViewState extends State<HistoryView> {
                           onTap: () => setState(() => _showChart = true),
                         ),
                         ToggleButton(
-                          icon: Icons.table_rows,
+                          icon: Icons.list_alt,
                           isActive: !_showChart,
                           onTap: () => setState(() => _showChart = false),
                         ),
@@ -78,16 +101,26 @@ class _HistoryViewState extends State<HistoryView> {
               ),
               const SizedBox(height: AppDimens.base),
 
+              CurrencySummary(
+                history: state.history,
+                toCode: AppConstants.lockedCurrencyTarget,
+              ),
+
               Expanded(
-                child: _showChart
-                    ? CurrencyChart(
-                  history: state.history,
-                  color: trendColor,
-                )
-                    : CurrencyTable(
-                  history: state.history,
-                  fromCode: AppConstants.lockedCurrencySource,
-                  toCode: AppConstants.lockedCurrencyTarget,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: _showChart
+                      ? CurrencyChart(
+                          key: const ValueKey('chart'),
+                          history: state.history,
+                          color: trendColor,
+                        )
+                      : CurrencyTable(
+                          key: const ValueKey('table'),
+                          history: state.history,
+                          fromCode: AppConstants.lockedCurrencySource,
+                          toCode: AppConstants.lockedCurrencyTarget,
+                        ),
                 ),
               ),
             ],
