@@ -12,8 +12,8 @@ A modern, cross-platform currency converter application built with **Flutter** a
 - 💹 **Real-Time Rates** - Live exchange rate data from UniRateAPI
 - 📊 **Historical Charts** - Visualize currency trends over time
 - 🔄 **Offline Support** - Cached data for offline access
-- 🎨 **Modern UI** - Clean, intuitive interface with smooth animations
-- 🧪 **100% Tested** - Comprehensive unit tests (25 passing tests)
+- 🎨 **Modern UI** - Clean, intuitive Material Design interface
+- 🧪 **Well Tested** - Comprehensive unit tests (25 passing tests)
 - 🌐 **Cross-Platform** - Android, iOS, Web, Windows, macOS, Linux
 
 ## 📱 Screenshots
@@ -93,8 +93,8 @@ lib/
 
 ### Networking: **Dio**
 - Generic HTTP client with interceptors
-- Error handling and retry logic
-- Request/response logging for debugging
+- Configurable timeouts (10s connect/receive)
+- Automatic API key injection via interceptors
 
 ### Dependency Injection: **GetIt + Injectable**
 - Service locator pattern for loose coupling
@@ -133,7 +133,7 @@ lib/
    Create a `.env` file in the project root:
    ```env
    CURRENCY_API_KEY=your_unirate_api_key_here
-   HISTORICAL_API_KEY=your_exchangerate_host_api_key_here
+   EXCHANGERATE_HOST_API_KEY=your_exchangerate_host_api_key_here
    ```
 
 5. **Run the app**
@@ -255,7 +255,7 @@ Used for historical exchange rate data and charts.
 Both API keys are required for full functionality. Add them to your `.env` file:
 ```env
 CURRENCY_API_KEY=your_unirate_api_key_here
-HISTORICAL_API_KEY=your_exchangerate_host_api_key_here
+EXCHANGERATE_HOST_API_KEY=your_exchangerate_host_api_key_here
 ```
 
 ## 🎨 Design Credits
@@ -280,7 +280,7 @@ User Action → Event → BLoC → UseCase → Repository → DataSource
 ### Error Handling
 - Network failures gracefully handled with cached data
 - User-friendly error messages
-- Automatic retry logic for transient errors
+- Offline-first approach minimizes error impact
 
 ## 🤝 Contributing
 
