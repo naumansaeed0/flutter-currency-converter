@@ -18,6 +18,12 @@ A modern, cross-platform currency converter application built with **Flutter** a
 
 ## 📱 Screenshots
 
+<p align="center">
+  <img src="screenshots/converter_screen.png" alt="Currency Converter" width="30%">
+  <img src="screenshots/history_screen_chart.png" alt="Historical Chart" width="30%">
+  <img src="screenshots/history_screen_table.png" alt="Historical Table" width="30%">
+</p>
+
 > **Design Inspiration**: UI design inspired by [Currency Converter Figma Template](https://www.figma.com/community/file/1215141639571590423)
 
 ## 🏗️ Architecture
